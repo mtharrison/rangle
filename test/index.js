@@ -36,7 +36,7 @@ describe('Rangle', () => {
         done();
     });
 
-    it('should return the same ranges when nothing has changed', (done) => {
+    it('should return the same ranges when there\'s nothing new to fetch', (done) => {
 
         const ranges = ['0-10:10', '10-20:2', '20-30:3', '30-40:4'];
 
@@ -123,34 +123,3 @@ describe('Rangle', () => {
         done();
     });
 });
-
-//
-// Algorithm in pseudocode
-//
-// GetChunkList (server, client, { maxChunks, maxStorageRatio, benefitWeighting, costWeighting }):
-//
-//     mostRecentClientUpdate = getMostRecentUpdate(client)
-//     changed = UpdatedSince(server, mostRecentClientUpdate)
-//
-//     // Nothing has changed, we don't do anything
-//
-//     if !changed
-//         return client;
-//
-//     totalClientItems = getTotalClientItems(client)
-//     totalServerItems = getTotalServerItems(server)
-//
-//     // Check if client should bail out of this dance because it's storing too much
-//
-//     if (totalClientItems / totalServerItems) > maxStorageRatio
-//         return StartOver(server)
-//
-//     // Check if we can just add another chunk
-//
-//     clientChunks = getClientChunks(client)
-//
-//     if clientChunks >= maxChunks
-//         consolidatedChunks = ConsolidateMinCostSubarray(server, { benefitWeighting, costWeighting })
-//         return AddNewChunk(server, consolidatedChunks)
-//     else
-//         return AddNewChunk(server, client)
