@@ -1,0 +1,28 @@
+{
+  "name": "rangle",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "lab -a code -t 100 -L"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mtharrison/rangle.git"
+  },
+  "keywords": [
+    "caching",
+    "range",
+    "chunks"
+  ],
+  "author": "Matt Harrison <hi@matt-harrison.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/mtharrison/rangle/issues"
+  },
+  "homepage": "https://github.com/mtharrison/rangle#readme",
+  "dependencies": {
+    "code": "^3.0.1",
+    "lab": "^10.9.0"
+  }
+}
