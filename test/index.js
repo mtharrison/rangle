@@ -22,6 +22,20 @@ const it = lab.test;
 
 describe('Rangle', () => {
 
+    it('should return the catch-all range if client has no ranges', (done) => {
+
+        const ranges = [];
+
+        const items = {
+            1: { modified: 1 }
+        };
+
+        const newRanges = Rangle.ranges(items, ranges);
+
+        expect(newRanges).to.equal(['0->']);
+        done();
+    });
+
     it('should return the same ranges when nothing has changed', (done) => {
 
         const ranges = ['0-10:10', '10-20:2', '20-30:3', '30-40:4'];
@@ -62,85 +76,53 @@ describe('Rangle', () => {
         expect(newRanges).to.equal(['0-10', '10-20', '20->']);
         done();
     });
+
+    it('should start over when client storage ratio is too high', (done) => {
+
+        const ranges = ['0-10:100', '10-20:2'];
+
+        const items = {
+            1: { modified: 1 },
+            2: { modified: 3 },
+            3: { modified: 11 },
+            4: { modified: 18 },
+            5: { modified: 24 }
+        };
+
+        const newRanges = Rangle.ranges(items, ranges);
+
+        expect(newRanges).to.equal(['0->']);
+        done();
+    });
+
+    it('should consolidate chunks with least valid items when required', (done) => {
+
+        const ranges = [
+            '0-10:2',   // 2 valid items
+            '10-20:1',  // 1 valid item  --| these chunks
+            '20-30:1',  // 1 valid item  --| will merge
+            '30-40:2',  // 2 valid items
+            '40-50:2'   // 2 valid items
+        ];
+
+        const items = {
+            1: { modified: 11 },
+            2: { modified: 22 },
+            3: { modified: 5 },
+            4: { modified: 5 },
+            5: { modified: 32 },
+            6: { modified: 38 },
+            7: { modified: 41 },
+            8: { modified: 49 },
+            9: { modified: 58 }
+        };
+
+        const newRanges = Rangle.ranges(items, ranges);
+
+        expect(newRanges).to.equal(['0-10', '10-30', '30-40', '40-50', '50->']);
+        done();
+    });
 });
-
-
-
-//
-// // Case 2 - Storing too much
-//
-// client = [
-//     { range: '0-10', num: 100 }, // 4 items
-//     { range: '10-20', num: 2 }, // 1 item
-//     { range: '20-30', num: 3 }, // 4 items
-//     { range: '30-40', num: 4 }  // 1 items
-// ];
-//
-// server = {
-//     1: 1,
-//     2: 25,
-//     3: 31,
-//     4: 45,
-//     5: 1,
-//     6: 28,
-//     7: 8,
-//     8: 24,
-//     9: 8,
-//     10: 20
-// };
-//
-// console.log(getChunks(server, client));
-//
-// // Case 3 - Add a new chunk
-//
-// client = [
-//     { range: '0-10', num: 10 }, // 4 items
-//     { range: '10-20', num: 2 }, // 1 item
-//     { range: '20-30', num: 3 }, // 4 items
-//     { range: '30-40', num: 4 }  // 1 items
-// ];
-//
-// server = {
-//     1: 1,
-//     2: 25,
-//     3: 31,
-//     4: 45,
-//     5: 1,
-//     6: 28,
-//     7: 8,
-//     8: 24,
-//     9: 8,
-//     10: 20
-// };
-//
-// console.log(getChunks(server, client));
-//
-// // Case 4 - Consolidation is required
-//
-// client = [
-//     { range: '0-10', num: 2 },      // c = 3, b = 1, f = -2
-//     { range: '10-20', num: 2 },     // c = 1, b = 1, f = 0
-//     { range: '20-30', num: 3 },     // c = 4, b = 1, f = -3
-//     { range: '30-40', num: 4 },     // c = 1, b = 3, f = 2      // should pick
-//     { range: '40-50', num: 4 }      // c = 3, b = 1, d = -2     // these chunks
-// ];
-//
-// server = {
-//     1: 1,
-//     2: 25,
-//     3: 31,
-//     4: 45,
-//     5: 60,
-//     6: 28,
-//     7: 8,
-//     8: 24,
-//     9: 8,
-//     10: 20,
-//     11: 44,
-//     12: 46
-// };
-//
-// console.log(getChunks(server, client));
 
 //
 // Algorithm in pseudocode
