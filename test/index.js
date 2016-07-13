@@ -77,24 +77,6 @@ describe('Rangle', () => {
         done();
     });
 
-    it('should start over when client storage ratio is too high', (done) => {
-
-        const ranges = ['0-10:100', '10-20:2'];
-
-        const items = {
-            1: { modified: 1 },
-            2: { modified: 3 },
-            3: { modified: 11 },
-            4: { modified: 18 },
-            5: { modified: 24 }
-        };
-
-        const newRanges = Rangle.ranges(items, ranges);
-
-        expect(newRanges).to.equal(['0->']);
-        done();
-    });
-
     it('should consolidate chunks with least valid items when required', (done) => {
 
         const ranges = [
@@ -120,6 +102,65 @@ describe('Rangle', () => {
         const newRanges = Rangle.ranges(items, ranges);
 
         expect(newRanges).to.equal(['0-10', '10-30', '30-40', '40-50', '50->']);
+        done();
+    });
+
+    it('should evict a chunk where ratio of valid items is too low', (done) => {
+
+        const ranges = [
+            '0-10:2',
+            '10-20:2',
+            '20-30:3',  // 2/3 = 0.67 - should be merged with next chunk
+            '30-40:2',
+            '40-50:2'
+        ];
+
+        const items = {
+            1: { modified: 1 },
+            2: { modified: 1 },
+            3: { modified: 11 },
+            4: { modified: 18 },
+            5: { modified: 52 },
+            6: { modified: 23 },
+            7: { modified: 24 },
+            8: { modified: 32 },
+            9: { modified: 34 },
+            10: { modified: 42 },
+            11: { modified: 48 }
+        };
+
+        const newRanges = Rangle.ranges(items, ranges);
+
+        expect(newRanges).to.equal(['0-10', '10-20', '20-40', '40-50', '50->']);
+        done();
+    });
+
+    it('should evict last chunk if ratio of valid items is too low', (done) => {
+
+        const ranges = [
+            '0-10:2',
+            '10-20:2',
+            '20-30:3',
+            '30-40:1',
+            '40-50:2'  // 1/2 = 0.5 - should be merged with previous chunk
+        ];
+
+        const items = {
+            1: { modified: 1 },
+            2: { modified: 1 },
+            3: { modified: 11 },
+            4: { modified: 18 },
+            5: { modified: 52 },
+            6: { modified: 23 },
+            7: { modified: 24 },
+            8: { modified: 32 },
+            9: { modified: 26 },
+            10: { modified: 42 }
+        };
+
+        const newRanges = Rangle.ranges(items, ranges);
+
+        expect(newRanges).to.equal(['0-10', '10-20', '20-30', '30-50', '50->']);
         done();
     });
 });
