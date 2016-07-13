@@ -163,4 +163,62 @@ describe('Rangle', () => {
         expect(newRanges).to.equal(['0-10', '10-20', '20-30', '30-50', '50->']);
         done();
     });
+
+    it('should be able to configure maxClientChunks chunks', (done) => {
+
+        const ranges = [
+            '0-10:2',
+            '10-20:1',
+            '20-30:1',
+            '30-40:2',
+            '40-50:2'
+        ];
+
+        const items = {
+            1: { modified: 11 },
+            2: { modified: 22 },
+            3: { modified: 5 },
+            4: { modified: 5 },
+            5: { modified: 32 },
+            6: { modified: 38 },
+            7: { modified: 41 },
+            8: { modified: 49 },
+            9: { modified: 58 }
+        };
+
+        const newRanges = Rangle.ranges(items, ranges, { maxClientChunks: 6 });
+
+        expect(newRanges).to.equal(['0-10', '10-20', '20-30', '30-40', '40-50', '50->']);
+        done();
+    });
+
+    it('should be able to configure minValidChunkRatio', (done) => {
+
+        const ranges = [
+            '0-10:2',   // | combine
+            '10-20:2',  // | these chunks
+            '20-30:3',  // 2/3 = 0.67 - should be merged with next chunk
+            '30-40:2',
+            '40-50:2'
+        ];
+
+        const items = {
+            1: { modified: 1 },
+            2: { modified: 1 },
+            3: { modified: 11 },
+            4: { modified: 18 },
+            5: { modified: 52 },
+            6: { modified: 23 },
+            7: { modified: 24 },
+            8: { modified: 32 },
+            9: { modified: 34 },
+            10: { modified: 42 },
+            11: { modified: 48 }
+        };
+
+        const newRanges = Rangle.ranges(items, ranges, { minValidChunkRatio: 0.5 });
+
+        expect(newRanges).to.equal(['0-20', '20-30', '30-40', '40-50', '50->']);
+        done();
+    });
 });
