@@ -1,5 +1,5 @@
 # rangle
-## Range based chunk caching algorithm
+### Range based chunk caching algorithm
 
 ### `Rangle.ranges(items, ranges, options)`
 
