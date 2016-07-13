@@ -1,7 +1,7 @@
 {
   "name": "rangle",
   "version": "0.1.0",
-  "description": "",
+  "description": "Range based chunk caching algorithm",
   "main": "lib/index.js",
   "scripts": {
     "test": "lab -a code -t 100 -L"
