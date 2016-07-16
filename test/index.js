@@ -32,7 +32,7 @@ describe('Rangle', () => {
 
         const newRanges = Rangle.ranges(items, ranges);
 
-        expect(newRanges).to.equal(['0->']);
+        expect(newRanges).to.equal(['0-1']);
         done();
     });
 
@@ -73,7 +73,7 @@ describe('Rangle', () => {
 
         const newRanges = Rangle.ranges(items, ranges);
 
-        expect(newRanges).to.equal(['0-10', '10-20', '20->']);
+        expect(newRanges).to.equal(['0-10', '10-20', '20-24']);
         done();
     });
 
@@ -101,7 +101,7 @@ describe('Rangle', () => {
 
         const newRanges = Rangle.ranges(items, ranges);
 
-        expect(newRanges).to.equal(['0-10', '10-30', '30-40', '40-50', '50->']);
+        expect(newRanges).to.equal(['0-10', '10-30', '30-40', '40-50', '50-58']);
         done();
     });
 
@@ -131,7 +131,7 @@ describe('Rangle', () => {
 
         const newRanges = Rangle.ranges(items, ranges);
 
-        expect(newRanges).to.equal(['0-10', '10-20', '20-40', '40-50', '50->']);
+        expect(newRanges).to.equal(['0-10', '10-20', '20-40', '40-50', '50-52']);
         done();
     });
 
@@ -160,7 +160,7 @@ describe('Rangle', () => {
 
         const newRanges = Rangle.ranges(items, ranges);
 
-        expect(newRanges).to.equal(['0-10', '10-20', '20-30', '30-50', '50->']);
+        expect(newRanges).to.equal(['0-10', '10-20', '20-30', '30-50', '50-52']);
         done();
     });
 
@@ -188,7 +188,7 @@ describe('Rangle', () => {
 
         const newRanges = Rangle.ranges(items, ranges, { maxClientChunks: 6 });
 
-        expect(newRanges).to.equal(['0-10', '10-20', '20-30', '30-40', '40-50', '50->']);
+        expect(newRanges).to.equal(['0-10', '10-20', '20-30', '30-40', '40-50', '50-58']);
         done();
     });
 
@@ -218,7 +218,7 @@ describe('Rangle', () => {
 
         const newRanges = Rangle.ranges(items, ranges, { minValidChunkRatio: 0.5 });
 
-        expect(newRanges).to.equal(['0-20', '20-30', '30-40', '40-50', '50->']);
+        expect(newRanges).to.equal(['0-20', '20-30', '30-40', '40-50', '50-52']);
         done();
     });
 });

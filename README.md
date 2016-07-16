@@ -37,10 +37,10 @@ const items = {
 };
 
 const newRanges = Rangle.ranges(items, ranges);
-// ['0-10', '10-20', '20-40', '40-50', '50->']
+// ['0-10', '10-20', '20-40', '40-50', '50-52]
 ```
 
-`50->` means the range from `time === 50` to whatever the time is when the chunk is actually requested. This algorithm makes no assumption about the current time. Ranges are closed on the left and open on the right, i.e. `50->100` will not include any elements where `modified === 50` but may include elements where `modified === 100`.
+This algorithm makes no assumption about the current time. Ranges are closed on the left and open on the right, i.e. `50->100` will not include any elements where `modified === 50` but may include elements where `modified === 100`.
 
 ### Eviction
 
@@ -51,7 +51,7 @@ When the client has the maximum number of chunks, two existing chunks will be me
 
 ### Performance
 
-The below is a simulation, starting with 10,000 items where between 0-2% of items are modified per day and there are between 20 and 100 new items added per day. The length of the simulation is 1 week. The client requests ranges every hour. Some metrics including total transfer and storage are compared with the dumb algorithm. The dumb algorithm simply hands the client the catch all range (`0->`) with every request.
+The below is a simulation, starting with 10,000 items where between 0-2% of items are modified per day and there are between 20 and 100 new items added per day. The length of the simulation is 1 week. The client requests ranges every hour. Some metrics including total transfer and storage are compared with the dumb algorithm. The dumb algorithm simply hands the client the catch all range (`0->`), where `>` means the most recently updated timestamp with every request.
 
 *Note: The bottom-right chart is a log (base 2) plot in the y-axis*
 
